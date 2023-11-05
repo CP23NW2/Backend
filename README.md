@@ -1,8 +1,9 @@
-# Vue 3 + Vite
+# 🪸🫧 IQU-Project | CP23NW2 
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
 
-## Recommended IDE Setup
+## Eyeglass Order Management Website for Customers
+> This is Website for both admin and customer that can help admin management many glass orders and store data of customer for customer can watch eyesight and process status on this website.
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
-# SPGI-Landingpage-Frontend-Pizza
+### 🧚‍♀️🧚 Members
+1. Pacharaporn Ngaosiri 63130500085
+2. Phenpitcha Aumpichit  63130500089
