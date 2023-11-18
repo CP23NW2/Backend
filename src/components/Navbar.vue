@@ -88,9 +88,12 @@
         Customer
       </router-link>
 
-      <li class="p-3 text-gray-700 rounded-md cursor-pointer hover:bg-primary-color hover:text-white">
-        Order
-      </li>
+      <router-link
+        to="/order"
+        class="p-3 text-gray-700 rounded-md cursor-pointer hover:bg-primary-color hover:text-white"
+      >
+        Customer
+      </router-link>
 
       <li class="p-3 text-gray-700 rounded-md cursor-pointer hover:bg-primary-color hover:text-white">
         Content
@@ -128,7 +131,7 @@
           >
           <router-link to="/"><div class="cursor-pointer hover:bg-[#F5821F4D] md:px-4 md:py-1.5 items-center inline-flex gap-1 rounded-xl">Home</div></router-link>
           <router-link to="/customer"><div class="cursor-pointer hover:bg-[#F5821F4D] md:px-4 md:py-1.5 items-center inline-flex gap-1 rounded-xl">Customer</div></router-link>
-          <router-link to="/customer"><div class="cursor-pointer hover:bg-[#F5821F4D] md:px-4 md:py-1.5 items-center inline-flex gap-1 rounded-xl">Order</div></router-link>
+          <router-link to="/order"><div class="cursor-pointer hover:bg-[#F5821F4D] md:px-4 md:py-1.5 items-center inline-flex gap-1 rounded-xl">Order</div></router-link>
           <router-link to="/customer"><div class="cursor-pointer hover:bg-[#F5821F4D] md:px-4 md:py-1.5 items-center inline-flex gap-1 rounded-xl">Content</div></router-link>
           <router-link to="/customer"><div class="cursor-pointer hover:bg-[#F5821F4D] md:px-4 md:py-1.5 items-center inline-flex gap-1 rounded-xl">About</div></router-link>
           <router-link to="/customer"><div class="cursor-pointer hover:bg-[#F5821F4D] md:px-4 md:py-1.5 items-center inline-flex gap-1 rounded-xl">Contract</div></router-link>

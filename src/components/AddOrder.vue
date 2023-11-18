@@ -11,43 +11,43 @@
           </div>
 
           <div class="flex py-5 md:px-12">
-            <div class="w-full">
-              <p class="px-1 text-primary-color md:text-2xl">
+            <div class="w-full p-4 md:p-0">
+              <p class="text-primary-color md:text-2xl">
                 User Information
               </p>
               <div
-                class="grid justify-between grid-cols-3 gap-4 mt-4 md:flex-row"
+                class="justify-between gap-4 mt-4 md:grid md:grid-cols-3 md:flex-row "
               >
-                <div class="w-full">
-                  <p class="text-sm md:text-lg">Name</p>
+                <div class="w-full pb-4">
+                  <p class="pb-2 text-sm md:text-lg">Name</p>
                   <input
                     id="inputConfirm"
-                    class="w-full text-sm bg-[#D4D4D433] rounded-md md:h-10"
+                    class="w-full text-sm bg-[#D4D4D433] rounded-md h-10"
                   />
                 </div>
-                <div class="w-full">
-                  <p class="text-sm md:text-lg">Order ID</p>
+                <div class="w-full pb-4">
+                  <p class="pb-2 text-sm md:text-lg">Order ID</p>
                   <input
-                    class="w-full text-sm bg-[#D4D4D433] rounded-md md:text-lg md:px-5 md:h-10"
+                    class="w-full text-sm bg-[#D4D4D433] rounded-md md:text-lg md:px-5 h-10"
                   />
                 </div>
-                <div class="w-full">
-                  <p class="text-sm md:text-lg">Date</p>
+                <div class="w-full pb-4">
+                  <p class="pb-2 text-sm md:text-lg">Date</p>
                   <input
                     type="date"
-                    class="w-full text-sm bg-[#D4D4D433] border-gray-200 rounded-md md:text-lg md:px-5 md:h-10"
+                    class="w-full text-sm bg-[#D4D4D433] border-gray-200 rounded-md md:text-lg md:px-5 h-10"
                   />
                 </div>
-                <div class="w-full">
-                  <p class="text-sm md:text-lg">Address</p>
+                <div class="w-full pb-4">
+                  <p class="pb-2 text-sm md:text-lg">Address</p>
                   <input
-                    class="w-full text-sm bg-[#D4D4D433] border-gray-200 rounded-md md:text-lg md:px-5 md:h-10"
+                    class="w-full text-sm bg-[#D4D4D433] border-gray-200 rounded-md md:text-lg md:px-5 h-10"
                   />
                 </div>
-                <div class="w-full">
-                  <p class="text-sm md:text-lg">Phone number</p>
+                <div class="w-full pb-4">
+                  <p class="pb-2 text-sm md:text-lg">Phone number</p>
                   <input
-                    class="w-full text-sm bg-[#D4D4D433] border-gray-200 rounded-md md:text-lg md:px-5 md:h-10"
+                    class="w-full text-sm bg-[#D4D4D433] border-gray-200 rounded-md md:text-lg md:px-5 h-10"
                   />
                 </div>
               </div>
@@ -55,7 +55,7 @@
                 <div class="mx-2">
                   <button
                     @click="confirm"
-                    class="bg-blue-700 h-[24px] w-[60px] text-white rounded-md md:h-[60px] md:w-[130px] md:text-xl"
+                    class="bg-blue-700 h-10 w-24 rounded-3xl text-white  md:h-[60px] md:w-[130px] md:text-xl cursor-pointer hover:bg-blue-800"
                   >
                     Confirm
                   </button>
@@ -63,14 +63,14 @@
                 <div>
                   <button
                     @click="print"
-                    class="bg-green-500 h-[24px] w-[60px] text-white rounded-md md:h-[60px] md:w-[130px] md:text-xl"
+                    class="bg-green-500 h-10 w-24 rounded-3xl text-white  md:h-[60px] md:w-[130px] md:text-xl cursor-pointer hover:bg-green-600"
                   >
                     Print
                   </button>
                 </div>
                 <div class="mx-2">
                   <button
-                    class="bg-red-500 h-[24px] w-[60px] text-white rounded-md md:h-[60px] md:w-[130px] md:text-xl"
+                    class="bg-red-500 h-10 w-24 rounded-3xl text-white  md:h-[60px] md:w-[130px] md:text-xl cursor-pointer hover:bg-red-600"
                   >
                     Cancel
                   </button>

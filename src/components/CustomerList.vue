@@ -6,11 +6,12 @@
             <div class="p-4 md:p-6">
               <div class="flex flex-row items-center justify-between md:flex-row ">
                 <div class="mb-4 text-2xl font-medium md:text-3xl text-zinc-800 md:mb-0">Customer List</div>
+                <RouterLink to="/addcustomer">
                 <div class="flex-shrink-0 mb-4 md:mb-0">
                   <button class="flex items-center px-4 py-2 text-base font-medium text-center text-white bg-blue-800 border md:py-3 md:px-8 rounded-2xl border-neutral-300">
                       Create New Customer
                   </button>
-                </div>
+                </div></RouterLink>
               </div>
               <div class="mt-4 text-xl font-mediumtext-black">2000 Customers</div>
               <div class="mt-4 overflow-x-auto">
