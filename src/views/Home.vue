@@ -1,12 +1,14 @@
 <template>
-<Navbar></Navbar>
-
-<AddOrder></AddOrder>
-
+<Navbar/>
+<div>
+<div class="mt-14">
+<AddOrder/>
+</div>
+</div>
 </template>
 
 <script>
-import AddOrder from "../components/AddOrder.vue";
+import AddOrder from '../components/AddOrder.vue'
 import Navbar from '../components/Navbar.vue'
 
 export default {
@@ -15,6 +17,7 @@ export default {
     AddOrder
   },
 };
+
 </script>
 
 <style></style>

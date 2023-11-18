@@ -1,11 +1,10 @@
 // import { createApp } from 'vue'
 import App from './App.vue'
 import './style.css'
-import { createI18n } from 'vue-i18n'
-import { createApp } from 'vue/dist/vue.esm-bundler';
 // import Vue from 'vue';
 import VueHtmlToPaper from 'vue-html-to-paper';
-
+import router from './Router/index.js';
+import { createApp } from 'vue';
 const options = {
   name: '_blank',
   specs: [
@@ -81,9 +80,9 @@ const options = {
 //       }
 //     }
 //   })
- 
   const app = createApp(App)
   // app.use(i18n)
   app.use(VueHtmlToPaper, options)
   app.use(VueHtmlToPaper)
+  app.use(router)
   app.mount('#app')
