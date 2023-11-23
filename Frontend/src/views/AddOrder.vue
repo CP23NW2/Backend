@@ -8,8 +8,8 @@
     </template>
     
     <script>
-    import AddOrder from '../components/AddOrder.vue'
-    import Navbar from '../components/Navbar.vue'
+    import AddOrder from '/src/components/AddOrder.vue'
+    import Navbar from '/src/components/Navbar.vue'
     
     export default {
       components: {

@@ -7,8 +7,8 @@
     </div>
 </template>
 <script>
-import NavBar from '../components/Navbar.vue'
-import AddCustomer from '../components/AddCustomer.vue';
+import NavBar from '/src/components/Navbar.vue'
+import AddCustomer from '/src/components/AddCustomer.vue'
 import { Icon } from '@iconify/vue'
 export default {
   components: {
