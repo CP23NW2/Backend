@@ -5,7 +5,7 @@ const path = require('path');
 const basename = path.basename(__filename);
 
 const sequelize = new Sequelize({
-  database: "eyeglass",
+  database: "eyewear",
   username: "postgres",
   host: "127.0.0.1",
   port: 5432,

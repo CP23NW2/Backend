@@ -6,19 +6,47 @@ const app = express();
 
 app.use(cors());
 
-module.exports = function EyeSight(){
-    class EyeSight extends Sequelize.Model {
+module.exports = function Eyewear(){
+    class Eyewear extends Sequelize.Model {
         static initialize(sequelize){
             this.sequelize = sequelize
 
             return this.init({
-                eyeSightId: {
+                eyewearID: {
                     type: DataTypes.INTEGER,
                     primaryKey: true
                 },
-                eyeSightName: {
+                eyewearName: {
                     type: DataTypes.STRING,
                     allowNull: false
+                },
+                orderStatus: {
+                    type: DataTypes.ENUM('Preparing', 'Processing', 'Complete'),
+                    allowNull: false
+                },
+                datePreparing: {
+                    type: DataTypes.DATE,
+                    allowNull: true
+                },
+                dateProcessing: {
+                    type: DataTypes.DATE,
+                    allowNull: true
+                },
+                dateComplete: {
+                    type: DataTypes.DATE,
+                    allowNull: true
+                },
+                lens: {
+                    type: DataTypes.STRING(50),
+                    allowNull: false
+                },
+                detail: {
+                    type: DataTypes.TEXT,
+                    allowNull: true
+                },
+                price: {
+                    type: DataTypes.FLOAT,
+                    allowNull: true
                 },
                 leftSPH: {
                     type: DataTypes.STRING(6),
@@ -65,10 +93,18 @@ module.exports = function EyeSight(){
             },
             {
                 sequelize, // Associate the model with the Sequelize instance
-                modelName: 'EyeSight', // Optional: Specify the model name
-                tableName: 'eyeSights' // Optional: Specify the table name
+                modelName: 'Eyewear', // Optional: Specify the model name
+                tableName: 'eyewears' // Optional: Specify the table name
+            })
+        }
+        static associate(models){
+            Eyewear.models = models;
+
+            Eyewear.belongsTo(models.Order, {
+                foreignKey: 'orderID',
+                references: { model: 'Order', key: 'orderID'}
             })
         }
     }
-    return EyeSight;
+    return Eyewear;
 }

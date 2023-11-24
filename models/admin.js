@@ -3,7 +3,7 @@ const cors = require('cors');
 const express = require('express')
 const { request, response } = require("express");
 const app = express();
-
+const customers = require("./customers");
 app.use(cors());
 
 module.exports = function Admin(){
@@ -13,19 +13,15 @@ module.exports = function Admin(){
 
             return this.init({
                 adminTel: {
-                    type: DataTypes.INTEGER,
-                    primaryKey: true
+                    type: DataTypes.INTEGER(10),
+                    primaryKey: true,
                 },
                 adminName: {
                     type: DataTypes.STRING,
                     allowNull: false
                 },
-                adminLastName: {
-                    type: DataTypes.STRING,
-                    allowNull: false
-                },
                 password: {
-                    type: DataTypes.STRING,
+                    type: DataTypes.STRING(16),
                     allowNull: false
                 }
             },

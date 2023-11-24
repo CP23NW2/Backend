@@ -2,6 +2,7 @@ const { Sequelize, DataTypes } = require("sequelize");
 const cors = require('cors');
 const express = require('express')
 const { request, response } = require("express");
+const orders = require("./orders");
 const app = express();
 
 app.use(cors());
@@ -13,7 +14,7 @@ module.exports = function Customer(){
 
             return this.init({
                 customerTel: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.INTEGER(10),
                     primaryKey: true  
                 },
                 customerName: {
@@ -34,6 +35,13 @@ module.exports = function Customer(){
                 modelName: 'Customer', // Optional: Specify the model name
                 tableName: 'customers' // Optional: Specify the table name
             })
+        }
+        static associate(models){
+            Customer.models = models;
+
+            Customer.belongsTo(models.Admin, { 
+                foreignKey: 'adminTel', 
+                references: { model: 'Admin', key: 'adminTel' } });
         }
     }
     return Customer;
