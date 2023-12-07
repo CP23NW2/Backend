@@ -1,4 +1,4 @@
-# 🪸🫧 IQU-Project | CP23NW2 
+# 🪸🫧 Buddy Glasses | CP23NW2 
 
 
 ## Eyeglass Order Management Website for Customers

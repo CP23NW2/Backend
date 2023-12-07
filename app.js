@@ -7,15 +7,21 @@ const route = require('./routes');
 const port = 3000;
 const model = require('./models')
 
-model.sequelize.sync().then(() => {
-    console.log('Syncing with eyeglass database!!');
-}).catch((err) => {
-    console.log('Failed to sync database: ' + err.message);
-});
+// model.sequelize.sync().then(() => {
+//     console.log('Syncing with eyeglass database!!');
+// }).catch((err) => {
+//     console.log('Failed to sync database: ' + err.message);
+// });
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get('/customers', (req, res) => {
+  // Simulate an error
+  const error = new Error('This is a sample error');
+  res.status(400).json({ error: error.message });
+});
 
 app.use('/', route);
 // Define a route
