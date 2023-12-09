@@ -5,6 +5,7 @@ const app = express.Router();
 
 // CREATE
 app.post("/customers", async (request, response) => {
+// HEAD
   const { customerTel, customerName, customerLastName, address } = request.body;
 
   // ตรวจสอบความยาวของ customerTel
@@ -37,6 +38,35 @@ app.post("/customers", async (request, response) => {
 }
 
   try {
+    const { customerTel, customerName, customerLastName, address } = request.body;
+    const customerTelAsNumber = parseInt(customerTel, 10);
+
+    // ตรวจสอบความยาวของ customerTel
+    if (customerTelAsNumber.length > 9) {
+        return response.status(400).json({ error: "customerTel should not exceed 10 characters"});
+    }
+
+    if (customerTelAsNumber.length < 9) {
+      return response.status(400).json({ error: "customerTel should equal to 10 characters" });
+    } 
+
+    // ตรวจสอบความถูกต้องของ customerTel และชนิดข้อมูลในฐานข้อมูล
+    if (isNaN(customerTelAsNumber)) {
+        return response.status(400).json({ error: "customerTel should be a valid number" });
+    }
+
+    // เพิ่มเงื่อนไขเพื่อตรวจสอบความถูกต้องของ customerTel
+    // if (!/^0[689].*/.test(customerTel)) {
+    //     return response.status(400).json({ error: "customerTel should start with '06', '08', or '09'" });
+    // }
+    // ตรวจสอบความถูกต้องของ customerName
+    if (typeof customerName !== 'string' || customerName.trim() === '') {
+        return response.status(400).json({ error: "customerName should be a non-empty string" });
+    }
+
+    if (typeof customerLastName !== 'string' || customerName.trim() === '') {
+      return response.status(400).json({ error: "customerLastName should be a non-empty string" });
+    }
       // เพิ่มเงื่อนไขเพื่อตรวจสอบว่า customerTel ไม่ซ้ำ
       const existingCustomer = await Customer.findOne({ where: { customerTel: customerTelAsNumber } });
       if (existingCustomer) {
@@ -55,7 +85,47 @@ app.post("/customers", async (request, response) => {
   } catch (error) {
       // แก้ไขส่วนนี้เพื่อให้คืนค่า status 400 และข้อความของ validation error
       if (error.name === 'SequelizeDatabaseError' && error.message.includes('out of range')) {
-          response.status(400).json({ error: "customerTel should not exceed 10 characters" });
+          response.status(400).json({ error: "customerTel should not exceed 10 characters"});
+      } else {
+          response.status(400).json({ error: "Validation error. Please check your input." });
+      }
+  }
+});
+
+app.post("/customers/validateTel", async (request, response) => {
+  try {
+    const { customerTel } = request.body;
+    const customerTelAsNumber = parseInt(customerTel, 10);
+
+    // ตรวจสอบความยาวของ customerTel
+    if (customerTelAsNumber.length > 9) {
+        return response.status(400).json({ error: "customerTel should not exceed 10 characters"});
+    }
+
+    if (customerTelAsNumber.length < 9) {
+      return response.status(400).json({ error: "customerTel should equal to 10 characters" });
+    } 
+
+    // ตรวจสอบความถูกต้องของ customerTel และชนิดข้อมูลในฐานข้อมูล
+    if (isNaN(customerTelAsNumber)) {
+        return response.status(400).json({ error: "customerTel should be a valid number" });
+    }
+
+    // เพิ่มเงื่อนไขเพื่อตรวจสอบความถูกต้องของ customerTel
+    // if (!/^0[689].*/.test(customerTel)) {
+    //     return response.status(400).json({ error: "customerTel should start with '06', '08', or '09'" });
+    // }
+
+    // เพิ่มเงื่อนไขเพื่อตรวจสอบว่า customerTel ไม่ซ้ำ
+    const existingCustomer = await Customer.findOne({ where: { customerTel: customerTelAsNumber } });
+    if (existingCustomer) {
+        return response.status(400).json({ error: "customerTel must be unique" });
+    }
+
+  } catch (error) {
+      // แก้ไขส่วนนี้เพื่อให้คืนค่า status 400 และข้อความของ validation error
+      if (error.name === 'SequelizeDatabaseError' && error.message.includes('out of range')) {
+          response.status(400).json({ error: "customerTel should not exceed 10 characters"});
       } else {
           response.status(400).json({ error: "Validation error. Please check your input again!" });
       }
