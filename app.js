@@ -17,12 +17,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/customers', (req, res) => {
-  // Simulate an error
-  const error = new Error('This is a sample error');
-  res.status(400).json({ error: error.message });
-});
-
 app.use('/', route);
 // Define a route
 app.get('/', (request, response) => {
