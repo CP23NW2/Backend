@@ -119,7 +119,7 @@ app.post("/customers/validateTel", async (request, response) => {
     // เพิ่มเงื่อนไขเพื่อตรวจสอบว่า customerTel ไม่ซ้ำ
     const existingCustomer = await Customer.findOne({ where: { customerTel: customerTelAsNumber } });
     if (existingCustomer) {
-        return response.status(400).json({ error: "customerTel must be unique" });
+        return response.status(400).json({ error: "customerTel must be unique " });
     }
 
   } catch (error) {
@@ -162,67 +162,29 @@ app.get("/customers", async (request, response) => {
   }
 });
 
-
 // UPDATE
-app.put("/customers/:id", async (request, response) => {
+app.put("/customers/:id", (request, response) => {
   const { id } = request.params;
-  const { customerTel, customerName, customerLastName, address } = request.body;
+  const { customerName, customerLastName, address, customerTel } = request.body;
 
-  // ตรวจสอบความยาวของ customerTel
-  if (customerTel.toString().length !== 9) {
-      return response.status(400).json({ error: "customerTel should 9 characters, Please check your input again!" });
+  // ตรวจสอบความถูกต้องของ customerName และ customerLastName
+  if (!customerName || !customerLastName) {
+      return response.status(400).json({ error: "customerName and customerLastName are required. Please check your input again!" });
   }
 
-
-  // ตรวจสอบความถูกต้องของ customerTel และชนิดข้อมูลในฐานข้อมูล
-  const customerTelAsNumber = parseInt(customerTel, 10);
-  if (isNaN(customerTelAsNumber)) {
-      return response.status(400).json({ error: "customerTel should be a valid number, Please check your input again!" });
-  }
-
-  // เพิ่มเงื่อนไขเพื่อตรวจสอบความถูกต้องของ customerTel
-  if (!/^[689].*/.test(customerTel)) {
-      return response.status(400).json({ error: "customerTel should start with '06', '08', or '09', Please check your input again!" });
-  }
-
-  // ตรวจสอบความถูกต้องของ customerName
-  if (typeof customerName !== 'string' || customerName.trim() === '') {
-      return response.status(400).json({ error: "customerName should be a non-empty string, Please check your input again!" });
-  }
-
-  if (typeof customerLastName !== 'string' || customerName.trim() === '') {
-      return response.status(400).json({ error: "customerLastName should be a non-empty string, Please check your input again!" });
-  }
-
-  try {
-      // เพิ่มเงื่อนไขเพื่อตรวจสอบว่า customerTel ไม่ซ้ำ
-      const existingCustomer = await Customer.findOne({ where: { customerTel: customerTelAsNumber } });
-      if (existingCustomer && existingCustomer.id != id) {
-          return response.status(400).json({ error: "customerTel must be unique, Please check your input again!" });
-      }
-
-      // เพิ่มข้อมูลลงในฐานข้อมูล (เพียงเฉพาะฟิลด์ที่ต้องการอัปเดต)
-      const updatedCustomer = await Customer.update({
-          customerTel, 
-          customerName, 
-          customerLastName, 
-          address
-      }, {
-          where: {
-              customerTel: id
-          },
-          returning: true
-      });
-
-      response.json(updatedCustomer[1][0]); // Return the updated customer data
-  } catch (error) {
-      // แก้ไขส่วนนี้เพื่อให้คืนค่า status 400 และข้อความของ validation error
-      if (error.name === 'SequelizeDatabaseError' && error.message.includes('out of range')) {
-          response.status(400).json({ error: "customerTel should not exceed 10 characters" });
-      } else {
-          response.status(400).json({ error: "Validation error. Please check your input again!" });
-      }
-  }
+  Customer.update({ 
+    customerTel,  
+    customerName, 
+      customerLastName, 
+      address
+  }, {
+    where: {
+        customerTel: id
+    },
+    returning: true
+  }).then((customer) => {
+    response.json(customer);
+  });
 });
 
 
