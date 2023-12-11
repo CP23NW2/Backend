@@ -64,5 +64,5 @@ app.delete("/admins/:id", (request, response) => {
       response.json(admin);
     });
   });
-  
+    
 module.exports = app;

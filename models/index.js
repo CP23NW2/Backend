@@ -4,20 +4,10 @@ const fs = require('fs');
 const path = require('path');
 const basename = path.basename(__filename);
 
-// const sequelize = new Sequelize({
-//   database: "eyewear",
-//   username: "postgres",
-//   host: "127.0.0.1",
-//   port: 5432,
-//   dialect: "postgres"
-// });
-
 const sequelize = new Sequelize({
   database: "eyewear",
   username: "postgres",
-  password: "123456",
-  host: "20.255.59.8",
-  // host: "172.18.0.2",
+  host: "127.0.0.1",
   port: 5432,
   dialect: "postgres"
 });

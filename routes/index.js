@@ -7,7 +7,7 @@ const customer= require('./customers')
 const order = require('./order')
 
 router.use(admin);
-router.use(eyewear);
+router.use(eyewear);                           
 router.use(customer);
 router.use(order);
 

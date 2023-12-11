@@ -10,11 +10,11 @@ app.post("/customers", async (request, response) => {
 
   // ตรวจสอบความยาวของ customerTel
   if (customerTel.length > 10) {
-      return response.status(400).json({ error: "customerTel should not exceed 10 characters, Please check your input again!" });
+      return response.status(400).json({ error: "customerTel with exactly 10 digits, Please check your input again!" });
   }
 
-  if (customerTel.length < 10) {
-    return response.status(400).json({ error: "customerTel should equal to 10 characters, Please check your input again!" });
+  if (customerTel.length < 10) { 
+    return response.status(400).json({ error: "customerTel with exactly 10 digits, Please check your input again!" });
 }
 
   // ตรวจสอบความถูกต้องของ customerTel และชนิดข้อมูลในฐานข้อมูล
