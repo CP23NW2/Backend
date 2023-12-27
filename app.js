@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', route);
 // Define a route
 app.get('/', (request, response) => {
-  res.send('Hello, Express! you can testå');
+  response.send('Hello, Express! you can testå');
 });
 
 // Start the server
