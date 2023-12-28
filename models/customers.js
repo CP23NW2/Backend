@@ -14,8 +14,11 @@ module.exports = function Customer(){
 
             return this.init({
                 customerTel: {
-                    type: DataTypes.INTEGER(10),
-                    primaryKey: true  
+                    type: DataTypes.INTEGER,
+                    length: 10,
+                    unsigned: true,
+                    zerofill: true,
+                    primaryKey: true,
                 },
                 customerName: {
                     type: DataTypes.STRING,

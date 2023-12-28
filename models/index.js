@@ -6,7 +6,7 @@ const basename = path.basename(__filename);
 
 const sequelize = new Sequelize({
   database: "postgres",
-  username: "admin",
+  username: "postgres",
   password: "1234",
   host: "20.255.57.31",
   port: 5432,
