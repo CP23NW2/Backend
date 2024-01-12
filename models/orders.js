@@ -50,8 +50,8 @@ module.exports = function Order(){
             Order.models = models
           
             Order.belongsTo(models.Customer, {
-                foreignKey: 'customerTel',
-                reference: {model: 'Customer', Key: 'customerTel'}
+                foreignKey: 'customerID',
+                reference: {model: 'Customer', Key: 'customerID'}
             }) //คสพแบบ 1:M
         }
     }

@@ -5,10 +5,12 @@ const path = require('path');
 const basename = path.basename(__filename);
 
 const sequelize = new Sequelize({
-  database: "postgres",
+  database: "eyewear",
   username: "postgres",
-  password: "1234",
-  host: "20.255.57.31",
+  // host: '127.0.0.1',
+  // username: "postgres",
+  // password: "1234",
+  // host: "20.255.57.31",
   port: 5432,
   dialect: "postgres"
 });
@@ -28,7 +30,7 @@ fs.readdirSync(__dirname)
     const Model = modelFactory(Sequelize);
     console.log('modelFactory', modelFactory);
     console.log(modelFactory);
-    console.log(Model);
+    console.log(Model);  
     Model.initialize(sequelize);
     index[Model.name] = Model;
   });
