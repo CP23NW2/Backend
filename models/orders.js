@@ -12,7 +12,7 @@ module.exports = function Order(){
 
             return this.init({
                 orderID: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.STRING,
                     primaryKey: true
                 },
                 orderName: {
