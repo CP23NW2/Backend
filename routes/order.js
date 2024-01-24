@@ -39,7 +39,7 @@ app.post("/orders", async (request, response) => {
 
 async function generateRandomOrderID() {
   // Generate a random 10-digit orderID
-  return Math.floor(Math.random() * 9000000000) + 1000000000;
+  return Math.floor(Math.random() * 90000000) + 10000000;
 }
 
 // READ ID
