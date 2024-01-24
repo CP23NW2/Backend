@@ -5,8 +5,33 @@ const app = express.Router();
 const { v4: uuidv4 } = require('uuid');
 
 app.post("/orders", async (request, response) => {
-  const { orderName, price, dateOrder, delivery, shippingName, tracking } = request.body;
+  function hasNonSpaceCharacters(inputString) {
+    // Define a regular expression to match any character that is not a space
+    const nonSpaceRegex = /\S/;
+  
+    // Test if the input string contains non-space characters
+    return nonSpaceRegex.test(inputString);
+  }
 
+  const { orderName, price, dateOrder, delivery, shippingName, tracking, customerID } = request.body;
+  
+  if(!orderName){
+    return response.status(400).json({ error: "Missing required Order Name" });
+  } else if(!price){
+    return response.status(400).json({ error: "Missing required Price" });
+  } else if(!dateOrder){
+    return response.status(400).json({ error: "Missing required Date of Order" });
+  } else if(!delivery){
+    return response.status(400).json({ error: "Missing required Delivery" });
+  } else if(!customerID){
+    return response.status(400).json({ error: "Missing required CustomerID" });
+  } else if (!orderName || !price || !dateOrder || !delivery || !customerID) {
+    return response.status(400).json({ error: "Please check your input again!" });
+  } else if (isNaN(price)){
+    return response.status(400).json({ error: "Price must be a numeric" });
+  } else if (!hasNonSpaceCharacters(orderName.toString())){
+    return response.status(400).json({ error: "Order Name can't contain spacebar" });
+  }
   // Generate a unique orderID
   const orderID = await generateRandomOrderID();
 
@@ -27,7 +52,8 @@ app.post("/orders", async (request, response) => {
           dateOrder: new Date(dateOrder),
           delivery,
           shippingName,
-          tracking
+          tracking,
+          customerID
       });
 
       response.json(newOrder);

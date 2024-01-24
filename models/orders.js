@@ -38,7 +38,7 @@ module.exports = function Order(){
                 tracking: {
                     type: DataTypes.STRING(15),
                     allowNull: true
-                }
+                },
             },
             {
                 sequelize, // Associate the model with the Sequelize instance

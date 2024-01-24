@@ -15,7 +15,7 @@ module.exports = function Customer() {
       return this.init(
         {
           customerID: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.BIGINT(10),
             autoIncrement: true,
             primaryKey: true,
           },
@@ -49,8 +49,8 @@ module.exports = function Customer() {
       Customer.models = models;
 
       Customer.belongsTo(models.Admin, {
-        foreignKey: "adminTel",
-        references: { model: "Admin", key: "adminTel" },
+        foreignKey: "adminID",
+        references: { model: "Admin", key: "adminID" },
       });
     }
   }

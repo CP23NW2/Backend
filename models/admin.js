@@ -12,12 +12,15 @@ module.exports = function Admin() {
             this.sequelize = sequelize
 
             return this.init({
+                adminID:{
+                    type: DataTypes.BIGINT(10),
+                    primaryKey: true
+                },
                 adminTel: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.STRING,
                     length: 10,
                     unsigned: true,
                     zerofill: true,
-                    primaryKey: true,
                 },
                 adminName: {
                     type: DataTypes.STRING,
@@ -34,7 +37,6 @@ module.exports = function Admin() {
                     tableName: 'admins' // Optional: Specify the table name
                 })
         }
-
     }
     return Admin;
 }
