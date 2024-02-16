@@ -49,8 +49,10 @@ module.exports = function Customer() {
       Customer.models = models;
 
       Customer.belongsTo(models.Admin, {
-        foreignKey: "adminID",
-        references: { model: "Admin", key: "adminID" },
+        foreignKey: "adminTel", // Adjust the foreign key based on your actual relationship
+        targetKey: "adminTel", // Adjust the target key based on your actual relationship
+//        foreignKey: "adminID",
+//        references: { model: "Admin", key: "adminID" },
       });
     }
   }
