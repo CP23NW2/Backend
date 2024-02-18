@@ -3,8 +3,17 @@ const express = require("express");
 const { Eyewear } = require("../models");
 const app = express.Router();
 
+function hasNonSpaceCharacters(inputString) {
+    // Define a regular expression to match any character that is not a space
+    const nonSpaceRegex = /\S/;
+  
+    // Test if the input string contains non-space characters
+    return nonSpaceRegex.test(inputString);
+  }
+
 // CREATE
 app.post("/eyewears", async (request, response, next) => {
+  
   try {
     const {
       eyewearID,
@@ -32,6 +41,22 @@ app.post("/eyewears", async (request, response, next) => {
       rightUpKT,
       orderID
     } = request.body;
+
+    if(!eyewearName){
+      return response.status(400).json({ error: "Missing required Eyewear Name" });
+    } else if(!hasNonSpaceCharacters(eyewearName.toString())){
+      return response.status(400).json({ error: "Eyewear Name can't contain spacebar" });
+    } else if(!lens){
+      return response.status(400).json({ error: "Missing required Lens" });
+    } else if(!hasNonSpaceCharacters(lens.toString())){
+      return response.status(400).json({ error: "Lens can't contain spacebar" });
+    } else if (!price){
+      return response.status(400).json({ error: "Missing required Price of Eyewear" });
+    } else if (isNaN(price)){
+    return response.status(400).json({ error: "Price must be a numeric" });
+    } else if(!orderStatus){
+      return response.status(400).json({ error: "Missing Status" });
+    }
 
     //Sorting CusotmerID by DESC
     const sortEyewearID = await Eyewear.findOne({

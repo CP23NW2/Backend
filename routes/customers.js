@@ -8,7 +8,12 @@ app.post("/customers", async (request, response) => {
   const { customerID, customerTel, customerName, customerLastName, address } =
     request.body;
 
-    //validate spacebar
+  // Function to generate a random 10-digit customerID
+  function generateCustomerID() {
+    const randomID = Math.floor(1000000000 + Math.random() * 9000000000); // Generate a random 10-digit number
+    return randomID.toString(); // Convert the number to a string
+  }
+  //validate spacebar
   function hasNonSpaceCharacters(inputString) {
     // Define a regular expression to match any character that is not a space
     const nonSpaceRegex = /\S/;
@@ -139,7 +144,7 @@ app.post("/customers/validateTel", async (request, response) => {
     } else {
       response
         .status(400)
-        .json({ error: "error" });
+        .json({ error: "Validation error. Please check your input again!" });
     }
   }
 });
@@ -205,7 +210,7 @@ app.get("/customers", async (request, response) => {
     response.json(customersData);
   } catch (error) {
     console.error("Error fetching customers:", error);
-    response.status(500).json({ error: "error" });
+    response.status(500).json({ error: error });
   }
 });
 
