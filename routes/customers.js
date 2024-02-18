@@ -9,52 +9,25 @@ app.post("/customers", async (request, response) => {
     request.body;
 
     //validate spacebar
-    function hasNonSpaceCharacters(inputString) {
-      // Define a regular expression to match any character that is not a space
-      const nonSpaceRegex = /\S/;
-    
-      // Test if the input string contains non-space characters
-      return nonSpaceRegex.test(inputString);
-    }
+  function hasNonSpaceCharacters(inputString) {
+    // Define a regular expression to match any character that is not a space
+    const nonSpaceRegex = /\S/;
 
-  //Sorting CusotmerID by DESC
-  const lastCustomerID = await Customer.findOne({
-    order: [["customerID", "DESC"]],
-  });
-
-  // Generate the next customerID
-  const nextCustomerID = lastCustomerID
-    ? incrementCustomerID(lastCustomerID.customerID)
-    : generateInitialCustomerID();
-
-  // Check for duplicates
-  const isDuplicate = await Customer.findOne({
-    where: { customerID: nextCustomerID },
-  });
-
-  if (isDuplicate) {
-    // Handle duplicate case (you may want to retry or return an error)
-    response
-      .status(500)
-      .json({ error: "Failed to generate a unique customerID" });
-  }
-  // Function to increment the customerID
-  function incrementCustomerID(lastCustomerID) {
-    const numericID = parseInt(lastCustomerID, 10);
-    return (numericID + 1).toString();
-  }
-
-  // Function to generate an initial customerID if no records exist
-  function generateInitialCustomerID() {
-    return "1"; // or any starting value you prefer
+    // Test if the input string contains non-space characters
+    return nonSpaceRegex.test(inputString);
   }
 
   if (!/^0[689].*/.test(customerTel)) {
-    return response.status(400).json({ error: "Phone Number should start with '06', '08', or '09', Please check your input again!" });
-}
+    return response.status(400).json({
+      error:
+        "Phone Number should start with '06', '08', or '09', Please check your input again!",
+    });
+  }
   try {
-    const { customerID, customerTel, customerName, customerLastName, address } =
+    const { customerTel, customerName, customerLastName, address } =
       request.body;
+
+    const customerID = generateCustomerID();
     const customerTelAsNumber = customerTel;
 
     // ตรวจสอบความถูกต้องของ customerTel และชนิดข้อมูลในฐานข้อมูล
@@ -64,32 +37,21 @@ app.post("/customers", async (request, response) => {
         .json({ error: "Phone Number should be a valid number" });
     }
 
+    //ตรวจสอบ customerID ซ้ำ
+    let isDuplicate = await Customer.findOne({ where: { customerID } });
+    while (isDuplicate) {
+      // ถ้า customerID ซ้ำกับอันอื่น สร้าง customerID ใหม่
+      customerID = generateCustomerID();
+      isDuplicate = await Customer.findOne({ where: { customerID } });
+    }
+
     // ตรวจสอบความยาวของ customerTel
     if (customerTel.toString().length !== 10) {
       return response
         .status(400)
         .json({ error: "Phone Number should equal to 10 characters" });
     }
-    
-    if (!hasNonSpaceCharacters(customerTel.toString())) {
-      return response.status(400).json({ error: "Phone Number contain only numbers" });
-    }    
 
-    // ตรวจสอบความถูกต้องของ customerName
-    if (typeof customerName !== "string" || customerName.trim() === "") {
-      return response
-        .status(400)
-        .json({ error: "Name must not be blank" });
-    }
-
-    if (
-      typeof customerLastName !== "string" ||
-      customerLastName.trim() === ""
-    ) {
-      return response
-        .status(400)
-        .json({ error: "Last Name must not be blank" });
-    }
     // เพิ่มเงื่อนไขเพื่อตรวจสอบว่า customerTel ไม่ซ้ำ
     const existingCustomer = await Customer.findOne({
       where: { customerTel: customerTelAsNumber },
@@ -100,9 +62,29 @@ app.post("/customers", async (request, response) => {
       });
     }
 
+    if (!hasNonSpaceCharacters(customerTel.toString())) {
+      return response
+        .status(400)
+        .json({ error: "Phone Number contain only numbers" });
+    }
+
+    // ตรวจสอบความถูกต้องของ customerName
+    if (typeof customerName !== "string" || customerName.trim() === "") {
+      return response.status(400).json({ error: "Name must not be blank" });
+    }
+
+    if (
+      typeof customerLastName !== "string" ||
+      customerLastName.trim() === ""
+    ) {
+      return response
+        .status(400)
+        .json({ error: "Last Name must not be blank" });
+    }
+
     // เพิ่มข้อมูลลงในฐานข้อมูล
     const newCustomer = await Customer.create({
-      customerID: nextCustomerID,
+      customerID,
       customerTel: customerTelAsNumber, // หรือให้ customerTel เป็น string ขึ้นอยู่กับการตั้งค่าของฐานข้อมูล
       customerName,
       customerLastName,
@@ -132,22 +114,32 @@ app.post("/customers", async (request, response) => {
 app.post("/customers/validateTel", async (request, response) => {
   try {
     const { customerTel } = request.body;
-    const customerTelAsNumber = customerTel
+    const customerTelAsNumber = customerTel;
 
     // เพิ่มเงื่อนไขเพื่อตรวจสอบว่า customerTel ไม่ซ้ำ
-    const existingCustomer = await Customer.findOne({ where: { customerTel: customerTelAsNumber } });
+    const existingCustomer = await Customer.findOne({
+      where: { customerTel: customerTelAsNumber },
+    });
     if (existingCustomer) {
-      return response.status(400).json({ error: "Phone Number must be unique" });
+      return response
+        .status(400)
+        .json({ error: "Phone Number must be unique" });
     }
     // If no errors are found, you can return a success response.
     response.status(200).json({ success: true });
-
   } catch (error) {
     // Handle specific validation errors
-    if (error.name === 'SequelizeDatabaseError' && error.message.includes('out of range')) {
-      response.status(400).json({ error: "Phone Number should not exceed 10 characters" });
+    if (
+      error.name === "SequelizeDatabaseError" &&
+      error.message.includes("out of range")
+    ) {
+      response
+        .status(400)
+        .json({ error: "Phone Number should not exceed 10 characters" });
     } else {
-      response.status(400).json({ error: "Validation error. Please check your input again!" });
+      response
+        .status(400)
+        .json({ error: "error" });
     }
   }
 });
@@ -163,7 +155,6 @@ app.post("/customers/validateName", async (request, response) => {
 
     // ถ้าผ่านทุกเงื่อนไขให้ส่ง response สำเร็จ
     response.status(200).json({ success: true });
-
   } catch (error) {
     console.error("Error validating customerName:", error);
     response.status(500).json({ error: "Internal Server Error" });
@@ -181,7 +172,6 @@ app.post("/customers/validateLastName", async (request, response) => {
 
     // ถ้าผ่านทุกเงื่อนไขให้ส่ง response สำเร็จ
     response.status(200).json({ success: true });
-
   } catch (error) {
     console.error("Error validating customerLastName:", error);
     response.status(500).json({ error: "Internal Server Error" });
@@ -215,14 +205,15 @@ app.get("/customers", async (request, response) => {
     response.json(customersData);
   } catch (error) {
     console.error("Error fetching customers:", error);
-    response.status(500).json({ error: "Internal Server Error" });
+    response.status(500).json({ error: "error" });
   }
 });
 
 // UPDATE
 app.put("/customers/:id", (request, response) => {
   const { id } = request.params;
-  const { customerID, customerName, customerLastName, address, customerTel } = request.body;
+  const { customerID, customerName, customerLastName, address, customerTel } =
+    request.body;
 
   // ตรวจสอบความถูกต้องของ customerName และ customerLastName
   if (!customerName || !customerLastName) {
