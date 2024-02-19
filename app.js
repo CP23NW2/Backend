@@ -2,9 +2,9 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
-// const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 const route = require('./routes');
-const port = 3000;
+//const port = 3000;
 const model = require('./models')
 
 // model.sequelize.sync().then(() => {
@@ -17,7 +17,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/', route);
+app.use('/api', route);
 // Define a route
 app.get('/', (request, response) => {
   response.send('Hello, Express! you can testå');
