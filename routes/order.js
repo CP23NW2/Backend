@@ -31,6 +31,8 @@ app.post("/orders", async (request, response) => {
     return response.status(400).json({ error: "Price must be a numeric" });
   } else if (!hasNonSpaceCharacters(orderName.toString())){
     return response.status(400).json({ error: "Order Name can't contain spacebar" });
+  } else if (!price){
+    return response.status(400).json({ error: "Missing required Price of Order" });
   }
   // Generate a unique orderID
   const orderID = await generateRandomOrderID();
