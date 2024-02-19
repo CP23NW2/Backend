@@ -32,7 +32,7 @@ module.exports = function Order(){
                     allowNull: false
                 },
                 shippingName: {
-                    type: DataTypes.ENUM('Flash', 'EMS', 'J&T'),
+                    type: DataTypes.STRING(10),
                     allowNull: true
                 },
                 tracking: {

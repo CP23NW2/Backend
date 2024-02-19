@@ -13,6 +13,18 @@ const model = require('./models')
 //     console.log('Failed to sync database: ' + err.message);
 // });
 
+// สร้าง middleware สำหรับการจัดการข้อผิดพลาด
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.json({
+    error: {
+      message: err.message || 'เกิดข้อผิดพลาดบางอย่างบนเซิร์ฟเวอร์'
+    }
+  });
+});
+
+// เริ่มตัวเซิร์ฟเวอร์
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
