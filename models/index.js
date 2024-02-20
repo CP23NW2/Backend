@@ -13,7 +13,13 @@ const sequelize = new Sequelize({
   // username: "postgres",
   // password: "1234",
   // host: "20.255.57.31",
-  port: 5432,
+  //port: 5432,
+  //dialect: "postgres"
+  // database: process.env.DB_DATABASE || "eyewear",
+  // username: process.env.DB_USER || "postgres",
+  // password: process.env.DB_PASSWORD || "", // Use the environment variable or an empty string if not set
+  // host: process.env.DB_HOST || "localhost", // Use the environment variable or default to 'localhost'
+  // port: process.env.DB_PORT || 5432,
   dialect: "postgres"
 });
 

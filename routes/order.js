@@ -3,6 +3,7 @@ const express = require("express");
 const { Order } = require("../models");
 const app = express.Router();
 const { v4: uuidv4 } = require('uuid');
+const e = require("express");
 
 app.post("/orders", async (request, response) => {
   function hasNonSpaceCharacters(inputString) {
@@ -15,6 +16,19 @@ app.post("/orders", async (request, response) => {
 
   const { orderName, price, dateOrder, delivery, shippingName, tracking, customerID } = request.body;
   
+  // if (!orderName && !price && !dateOrder && !delivery && !customerID) {
+  //   return response.status(400).json({ error: "Please check your input again!" });
+  // } else if (!orderName && !price && !dateOrder && !delivery) {
+  //   return response.status(400).json({ error: "Please check your input again!" });
+  // } else if (!orderName && !price && !dateOrder && !customerID) {
+  //   return response.status(400).json({ error: "Please check your input again!" });
+  // } else if (!orderName && !price && !delivery && !customerID) {
+  //   return response.status(400).json({ error: "Please check your input again!" });
+  // } else if (!orderName && !dateOrder && !delivery && !customerID) {
+  //   return response.status(400).json({ error: "Please check your input again!" });
+  // } else if (!price && !dateOrder && !delivery && !customerID) {
+  //   return response.status(400).json({ error: "Please check your input again!" });
+  // } else 
   if(!orderName){
     return response.status(400).json({ error: "Missing required Order Name" });
   } else if(!price){
@@ -25,9 +39,7 @@ app.post("/orders", async (request, response) => {
     return response.status(400).json({ error: "Missing required Delivery" });
   } else if(!customerID){
     return response.status(400).json({ error: "Missing required CustomerID" });
-  } else if (!orderName || !price || !dateOrder || !delivery || !customerID) {
-    return response.status(400).json({ error: "Please check your input again!" });
-  } else if (isNaN(price)){
+  }  else if (isNaN(price)){
     return response.status(400).json({ error: "Price must be a numeric" });
   } else if (!hasNonSpaceCharacters(orderName.toString())){
     return response.status(400).json({ error: "Order Name can't contain spacebar" });
