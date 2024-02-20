@@ -16,19 +16,20 @@ app.post("/orders", async (request, response) => {
 
   const { orderName, price, dateOrder, delivery, shippingName, tracking, customerID } = request.body;
   
-  if (!orderName && !price && !dateOrder && !delivery && !customerID) {
-    return response.status(400).json({ error: "Please check your input again!" });
-  } else if (!orderName && !price && !dateOrder && !delivery) {
-    return response.status(400).json({ error: "Please check your input again!" });
-  } else if (!orderName && !price && !dateOrder && !customerID) {
-    return response.status(400).json({ error: "Please check your input again!" });
-  } else if (!orderName && !price && !delivery && !customerID) {
-    return response.status(400).json({ error: "Please check your input again!" });
-  } else if (!orderName && !dateOrder && !delivery && !customerID) {
-    return response.status(400).json({ error: "Please check your input again!" });
-  } else if (!price && !dateOrder && !delivery && !customerID) {
-    return response.status(400).json({ error: "Please check your input again!" });
-  } else if(!orderName){
+  // if (!orderName && !price && !dateOrder && !delivery && !customerID) {
+  //   return response.status(400).json({ error: "Please check your input again!" });
+  // } else if (!orderName && !price && !dateOrder && !delivery) {
+  //   return response.status(400).json({ error: "Please check your input again!" });
+  // } else if (!orderName && !price && !dateOrder && !customerID) {
+  //   return response.status(400).json({ error: "Please check your input again!" });
+  // } else if (!orderName && !price && !delivery && !customerID) {
+  //   return response.status(400).json({ error: "Please check your input again!" });
+  // } else if (!orderName && !dateOrder && !delivery && !customerID) {
+  //   return response.status(400).json({ error: "Please check your input again!" });
+  // } else if (!price && !dateOrder && !delivery && !customerID) {
+  //   return response.status(400).json({ error: "Please check your input again!" });
+  // } else 
+  if(!orderName){
     return response.status(400).json({ error: "Missing required Order Name" });
   } else if(!price){
     return response.status(400).json({ error: "Missing required Price" });
