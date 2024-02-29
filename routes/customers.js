@@ -116,38 +116,38 @@ app.post("/customers", async (request, response) => {
   }
 });
 
-app.post("/customers/validateTel", async (request, response) => {
-  try {
-    const { customerTel } = request.body;
-    const customerTelAsNumber = customerTel;
+// app.post("/customers/validateTel", async (request, response) => {
+//   try {
+//     const { customerTel } = request.body;
+//     const customerTelAsNumber = customerTel;
 
-    // เพิ่มเงื่อนไขเพื่อตรวจสอบว่า customerTel ไม่ซ้ำ
-    const existingCustomer = await Customer.findOne({
-      where: { customerTel: customerTelAsNumber },
-    });
-    if (existingCustomer) {
-      return response
-        .status(400)
-        .json({ error: "Phone Number must be unique" });
-    }
-    // If no errors are found, you can return a success response.
-    response.status(200).json({ success: true });
-  } catch (error) {
-    // Handle specific validation errors
-    if (
-      error.name === "SequelizeDatabaseError" &&
-      error.message.includes("out of range")
-    ) {
-      response
-        .status(400)
-        .json({ error: "Phone Number should not exceed 10 characters" });
-    } else {
-      response
-        .status(400)
-        .json({ error: "Validation error. Please check your input again!" });
-    }
-  }
-});
+//     // เพิ่มเงื่อนไขเพื่อตรวจสอบว่า customerTel ไม่ซ้ำ
+//     const existingCustomer = await Customer.findOne({
+//       where: { customerTel: customerTelAsNumber },
+//     });
+//     if (existingCustomer) {
+//       return response
+//         .status(400)
+//         .json({ error: "Phone Number must be unique" });
+//     }
+//     // If no errors are found, you can return a success response.
+//     response.status(200).json({ success: true });
+//   } catch (error) {
+//     // Handle specific validation errors
+//     if (
+//       error.name === "SequelizeDatabaseError" &&
+//       error.message.includes("out of range")
+//     ) {
+//       response
+//         .status(400)
+//         .json({ error: "Phone Number should not exceed 10 characters" });
+//     } else {
+//       response
+//         .status(400)
+//         .json({ error: "Validation error. Please check your input again!" });
+//     }
+//   }
+// });
 
 app.post("/customers/validateName", async (request, response) => {
   try {
@@ -210,7 +210,7 @@ app.get("/customers", async (request, response) => {
     response.json(customersData);
   } catch (error) {
     console.error("Error fetching customers:", error);
-    response.status(500).json({ error: error });
+    response.status(500).json({ error: "error" });
   }
 });
 

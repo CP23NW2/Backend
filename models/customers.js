@@ -37,7 +37,8 @@ module.exports = function Customer() {
             type: DataTypes.TEXT,
             allowNull: true,
           },
-        },{
+        },
+        {
           sequelize, // Associate the model with the Sequelize instance
           modelName: "Customer", // Optional: Specify the model name
           tableName: "customers", // Optional: Specify the table name
