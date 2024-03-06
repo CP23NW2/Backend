@@ -105,6 +105,7 @@ module.exports = function Eyewear(){
                 references: { model: 'Order', key: 'orderID'}
             })
         }
+        
     }
     return Eyewear;
 }
