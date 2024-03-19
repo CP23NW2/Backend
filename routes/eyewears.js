@@ -162,6 +162,51 @@ app.put("/eyewears/:id", (request, response) => {
     });
   });
 
+// UPDATE Status
+app.put("/eyewears/status/:id", async (request, response) => {
+  const { id } = request.params;
+  const { orderStatus } = request.body;
+
+  try {
+    // Fetch the current status of the eyewear
+    const eyewear = await Eyewear.findOne({ where: { eyewearID: id } });
+
+    if (!eyewear) {
+      return response.status(404).json({ error: 'Eyewear not found' });
+    }
+
+    const currentStatus = eyewear.orderStatus;
+
+    // Define the valid status transitions
+    const validTransitions = {
+      'Preparing': ['Processing'],
+      'Processing': ['Complete']
+      // Add more transitions if needed
+    };
+
+    // Check if the requested status transition is valid
+    if (!validTransitions[currentStatus] || !validTransitions[currentStatus].includes(orderStatus)) {
+      return response.status(400).json({ error: 'Invalid status transition. You cannot revert to a previous status' });
+    }
+
+    // Update the status
+    const [rowsUpdated, [updatedEyewear]] = await Eyewear.update(
+      { orderStatus },
+      {
+        where: { eyewearID: id },
+        returning: true
+      }
+    );
+
+    response.json(updatedEyewear);
+  } catch (error) {
+    console.error('Error updating eyewear status:', error);
+    response.status(500).json({ error: 'Failed to update eyewear status' });
+  }
+});
+
+
+
 // DELETE
 app.delete("/eyewears/:id", (request, response) => {
     const { id } = request.params;

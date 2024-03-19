@@ -1,10 +1,10 @@
 const { request, response } = require("express");
 const express = require("express");
-const { Order, Eyewear } = require("../models");
+const { Order, Eyewear, Customer } = require("../models");
 // const { Eyewear } = require("../models");
 const app = express.Router();
 const { v4: uuidv4 } = require("uuid");
-const e = require("express");
+const { Op } = require('sequelize');
 
 async function generateRandomOrderID() {
   // Generate a random 10-digit orderID

@@ -53,6 +53,11 @@ module.exports = function Order(){
                 foreignKey: 'customerID',
                 reference: {model: 'Customer', Key: 'customerID'}
             }) //คสพแบบ 1:M
+
+            Order.hasMany(models.Eyewear, {
+                foreignKey: 'orderID',
+                reference: {model: 'Eyewear', Key: 'orderID'}
+            })
         }
     }
     return Order;

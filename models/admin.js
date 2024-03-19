@@ -29,6 +29,14 @@ module.exports = function Admin() {
                 password: {
                     type: DataTypes.STRING(16),
                     allowNull: false
+                },
+                email: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                    unique: true,
+                    validate: {
+                        isEmail: true // Validate the email format
+                    }
                 }
             },
                 {

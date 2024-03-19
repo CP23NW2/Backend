@@ -11,6 +11,6 @@ router.use(admin);
 router.use(eyewear);                           
 router.use(customer);
 router.use(order);
-router.use(validate)
+router.use(validate);
 
 module.exports = router;
