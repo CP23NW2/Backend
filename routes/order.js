@@ -136,14 +136,12 @@ app.post("/orderEyewear", async (request, response) => {
       } else if (!eyewearData.orderStatus) {
         return response.status(400).json({ error: "Missing Status" });
       }
-
       await Eyewear.create({
         eyewearID: nextEyewearID,
         ...eyewearData,
-        orderId: order.id, // Associate eyewear item with the created order
+        orderID: order.orderID, // Associate eyewear item with the created order
       });
     }
-
     response.status(201).json({ message: "Order created successfully" });
   } catch (error) {
     console.error("Error creating order:", error);
