@@ -37,6 +37,10 @@ module.exports = function Admin() {
                     validate: {
                         isEmail: true // Validate the email format
                     }
+                },
+                otp: {
+                   type: DataTypes.INTEGER,
+                   allowNull: true
                 }
             },
                 {

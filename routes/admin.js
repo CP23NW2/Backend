@@ -221,7 +221,7 @@ async function sendOTPByEmail(email, otp) {
   const mailOptions = {
     from: 'buddyglassesofficial@gmail.com',
     to: email,
-    subject: 'Pizza love Pangram tee sooddddd',
+    subject: 'Pizza love',
     text: `Your OTP is: ${otp}`
   };
 
@@ -251,9 +251,11 @@ app.post('/admins/login', async (req, res) => {
 
     // ถ้าพบผู้ดูแลระบบหรือผู้ใช้ถูกต้อง
     // ส่งรหัส OTP ไปยังอีเมลของผู้ใช้
+    // const otp = generateOTP();
     const otp = generateOTP();
+    admin.otp = otp;
+    await admin.save();
     await sendOTPByEmail(email, otp);
-    
     // ส่งข้อความสำเร็จหากไม่มีข้อผิดพลาด
     return res.status(200).json({ message: 'Login successful. OTP sent to your email.' });
   } catch (error) {
@@ -264,6 +266,31 @@ app.post('/admins/login', async (req, res) => {
   }
 });
 
+app.post('/admins/verify-otp', async (req, res) => {
+  const { email, otp } = req.body;
+  try {
+    // ค้นหาผู้ดูแลระบบโดยใช้ email
+    const admin = await Admin.findOne({ where: { email } });
+
+    // ถ้าไม่พบผู้ดูแลระบบ หรือ OTP ที่ใส่ไม่ตรงกับที่สร้างขึ้นมา
+    if (!admin || admin.otp !== otp) { // แทน '123456' ด้วย OTP ที่สร้างขึ้น
+      console.log('OTP verification failed')
+      return res.status(401).json({
+        message: "OTP verification failed",
+        error: "Invalid OTP",
+      });
+    }
+
+    // ถ้า OTP ถูกต้อง
+    // ส่งข้อความสำเร็จหากไม่มีข้อผิดพลาด
+    return res.status(200).json({ message: 'OTP verification successful. You are now logged in.' });
+  } catch (error) {
+    // หากเกิดข้อผิดพลาดในการค้นหาหรือตรวจสอบ OTP
+    // ส่งข้อความข้อผิดพลาด
+    console.error("Error during OTP verification:", error);
+    return res.status(500).json({ error: 'Failed to process OTP verification request.', errorMessage: error.message });
+  }
+});
 
 // // Create a Nodemailer transporter
 // const transporter = nodemailer.createTransport({

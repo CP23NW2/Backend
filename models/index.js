@@ -7,8 +7,8 @@ const basename = path.basename(__filename);
 const sequelize = new Sequelize({
   database: "eyewear",
   username: "postgres",
-  // host: '127.0.0.1',
-  host: 'cp23nw2.sit.kmutt.ac.th',
+  host: '127.0.0.1',
+  // host: 'cp23nw2.sit.kmutt.ac.th',
   password: "postgres",
   // username: "postgres",
   // password: "1234",
