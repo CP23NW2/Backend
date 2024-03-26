@@ -91,13 +91,16 @@ app.post("/eyewears", async (request, response, next) => {
       return "1"; // or any starting value you prefer
     }
 
+   // สร้างวันที่ปัจจุบัน
+  //  const datePreparing = new Date();
+
     await Eyewear.create({
       eyewearID: nextEyewearID,
       eyewearName,
       orderStatus,
-      datePreparing: new Date(datePreparing),
-      dateProcessing: new Date(dateProcessing),
-      dateComplete: new Date(dateComplete),
+      datePreparing,
+      dateProcessing,
+      dateComplete,
       lens,
       detail,
       price,
@@ -162,6 +165,7 @@ app.put("/eyewears/:id", (request, response) => {
     });
   });
 
+
 // UPDATE Status
 app.put("/eyewears/status/:id", async (request, response) => {
   const { id } = request.params;
@@ -189,9 +193,16 @@ app.put("/eyewears/status/:id", async (request, response) => {
       return response.status(400).json({ error: 'Invalid status transition. You cannot revert to a previous status' });
     }
 
-    // Update the status
+    // Update the status and set the date
+    let updateFields = { orderStatus };
+    if (orderStatus === 'Processing') {
+      updateFields.dateProcessing = new Date();
+    } else if (orderStatus === 'Complete') {
+      updateFields.dateComplete = new Date();
+    }
+
     const [rowsUpdated, [updatedEyewear]] = await Eyewear.update(
-      { orderStatus },
+      updateFields,
       {
         where: { eyewearID: id },
         returning: true
@@ -204,6 +215,7 @@ app.put("/eyewears/status/:id", async (request, response) => {
     response.status(500).json({ error: 'Failed to update eyewear status' });
   }
 });
+
 
 
 

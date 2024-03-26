@@ -3,6 +3,8 @@ const express = require("express");
 const { Admin } = require("../models");
 const app = express.Router();
 const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
+
 
 // function  
    // Function to generate a unique admin ID
@@ -221,8 +223,59 @@ async function sendOTPByEmail(email, otp) {
   const mailOptions = {
     from: 'buddyglassesofficial@gmail.com',
     to: email,
-    subject: 'Pizza love',
-    text: `Your OTP is: ${otp}`
+    subject: 'Email Verification',
+    html: `
+    <html>
+      <head>
+        <style>
+          /* CSS styles */
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333333;
+            padding: 20px;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          }
+          .header {
+            background-color: #ff6600;
+            color: #ffffff;
+            padding: 10px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+          }
+          .content {
+            padding: 20px;
+          }
+          .otp {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff6600;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h2>Email Verification</h2>
+          </div>
+          <div class="content">
+            <p>Dear User,</p>
+            <p>Please use the following OTP to verify your email address:</p>
+            <p class="otp">${otp}</p>
+            <p>If you didn't request this, you can safely ignore this email.</p>
+            <p>Thank you,<br/>Buddy Glasses Team</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `
   };
 
   try {
@@ -281,9 +334,12 @@ app.post('/admins/verify-otp', async (req, res) => {
       });
     }
 
+     // If admin is found and password is correct, generate a token
+     const token = jwt.sign({ email: admin.email, id: admin.adminID }, 'secret', { expiresIn: '1h' });
+
     // ถ้า OTP ถูกต้อง
     // ส่งข้อความสำเร็จหากไม่มีข้อผิดพลาด
-    return res.status(200).json({ message: 'OTP verification successful. You are now logged in.' });
+    return res.status(200).json({ message: 'OTP verification successful. You are now logged in.', token });
   } catch (error) {
     // หากเกิดข้อผิดพลาดในการค้นหาหรือตรวจสอบ OTP
     // ส่งข้อความข้อผิดพลาด

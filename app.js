@@ -23,8 +23,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// เริ่มตัวเซิร์ฟเวอร์
-
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
