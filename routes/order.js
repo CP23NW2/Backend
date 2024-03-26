@@ -249,7 +249,7 @@ app.put("/orders/:id", (request, response) => {
       orderID,
       orderName,
       price,
-      dateOrder: new Date(dateOrder),
+      dateOrder,
       delivery,
       shippingName,
       tracking,
