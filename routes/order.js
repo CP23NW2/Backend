@@ -137,10 +137,13 @@ app.post("/orderEyewear", async (request, response) => {
         return response.status(400).json({ error: "Missing Status" });
       }
       await Eyewear.create({
-        eyewearID: nextEyewearID,
         ...eyewearData,
-        orderID: order.orderID, // Associate eyewear item with the created order
-      });
+        eyewearID: nextEyewearID,
+        datePreparing: new Date(),
+        dateProcessing: null,
+        dateComplete: null,
+        orderID: order.orderID // Associate eyewear item with the created order
+      })
     }
     response.status(201).json({ message: "Order created successfully" });
   } catch (error) {
@@ -232,6 +235,74 @@ app.get("/orders", (request, response) => {
   });
 });
 
+app.put("/orders/:id/eyewears", async (request, response) => {
+  const { id } = request.params;
+  const eyewears = request.body;
+
+  try {
+    const order = await Order.findByPk(id);
+    if (!order) {
+      return response.status(404).json({ error: "Order not found" });
+    }
+
+    for (const eyewearData of eyewears) {
+      const eyewear = await Eyewear.findOne({
+        where: { eyewearID: eyewearData.eyewearID }
+      })
+
+      if (!eyewear) {
+        return response.status(404).json({ error: "Eyewear not found" });
+      }
+
+      const currentStatus = eyewear.orderStatus
+      const newStatus = eyewearData.orderStatus
+
+      if(currentStatus === newStatus) {
+      }
+
+      if(currentStatus === 'Preparing' && newStatus === 'Complete') {
+        return response.status(400).json({
+          error:
+            'Cannot change status from Preparing to Complete directly. Must change to Processing first.'
+      })}
+
+      if (currentStatus === 'Preparing' && newStatus === 'Processing') {
+        eyewearData.dateProcessing = new Date()
+        await Eyewear.update(
+          {
+            dateProcessing: eyewearData.dateProcessing,
+            dateComplete: null,
+            orderStatus: eyewearData.orderStatus
+          },
+          { where: { orderID: eyewearData.orderID } }
+        )
+      }
+
+      if (currentStatus === 'Processing' && newStatus === 'Complete') {
+        eyewearData.dateComplete = new Date()
+        await Eyewear.update(
+          {
+            dateComplete: eyewearData.dateComplete,
+            orderStatus: eyewearData.orderStatus
+          },
+          { where: { orderID: eyewearData.orderID } }
+        )
+      }
+
+      if(currentStatus === 'Complete') {
+        return response.status(400).json({
+          error:
+            'Already Complete'
+        })
+      }
+    }
+    return response.json({ message: 'Eyewears created successfully' });
+  } catch (error) {
+    console.error('Error creating Eyewears:', error)
+    response.status(500).json({ error: "Internal Server Error" });
+  }
+})
+
 // UPDATE
 app.put("/orders/:id", (request, response) => {
   const { id } = request.params;
@@ -243,6 +314,7 @@ app.put("/orders/:id", (request, response) => {
     delivery,
     shippingName,
     tracking,
+    
   } = request.body;
   Order.update(
     {
