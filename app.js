@@ -27,7 +27,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/', route);
+app.use('/api', route);
 // Define a route
 app.get('/', (request, response) => {
   response.send('Hello, Express! you can testå');
@@ -37,3 +37,4 @@ app.get('/', (request, response) => {
 app.listen(port, () => {
   console.log(`Backend running with port : ${port} !!!`);
 });
+

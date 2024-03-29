@@ -235,73 +235,65 @@ app.get("/orders", (request, response) => {
   });
 });
 
-app.put("/orders/:id/eyewears", async (request, response) => {
+// อ่าน eyewear ที่เกี่ยวข้องกับ orderID ที่กำหนด
+app.get("/orders/:id/eyewear", async (request, response) => {
   const { id } = request.params;
-  const eyewears = request.body;
 
   try {
-    const order = await Order.findByPk(id);
-    if (!order) {
-      return response.status(404).json({ error: "Order not found" });
+    // ค้นหา eyewear ที่สัมพันธ์กับ orderID ที่กำหนด
+    const eyewear = await Eyewear.findAll({
+      where: {
+        orderID: id // ระบุ orderID ที่ต้องการ
+      }
+    });
+
+    if (eyewear.length > 0) {
+      response.json(eyewear);
+    } else {
+      response.sendStatus(404); // ไม่พบ eyewear สำหรับ orderID ที่กำหนด
     }
-
-    for (const eyewearData of eyewears) {
-      const eyewear = await Eyewear.findOne({
-        where: { eyewearID: eyewearData.eyewearID }
-      })
-
-      if (!eyewear) {
-        return response.status(404).json({ error: "Eyewear not found" });
-      }
-
-      const currentStatus = eyewear.orderStatus
-      const newStatus = eyewearData.orderStatus
-
-      if(currentStatus === newStatus) {
-      }
-
-      if(currentStatus === 'Preparing' && newStatus === 'Complete') {
-        return response.status(400).json({
-          error:
-            'Cannot change status from Preparing to Complete directly. Must change to Processing first.'
-      })}
-
-      if (currentStatus === 'Preparing' && newStatus === 'Processing') {
-        eyewearData.dateProcessing = new Date()
-        await Eyewear.update(
-          {
-            dateProcessing: eyewearData.dateProcessing,
-            dateComplete: null,
-            orderStatus: eyewearData.orderStatus
-          },
-          { where: { orderID: eyewearData.orderID } }
-        )
-      }
-
-      if (currentStatus === 'Processing' && newStatus === 'Complete') {
-        eyewearData.dateComplete = new Date()
-        await Eyewear.update(
-          {
-            dateComplete: eyewearData.dateComplete,
-            orderStatus: eyewearData.orderStatus
-          },
-          { where: { orderID: eyewearData.orderID } }
-        )
-      }
-
-      if(currentStatus === 'Complete') {
-        return response.status(400).json({
-          error:
-            'Already Complete'
-        })
-      }
-    }
-    return response.json({ message: 'Eyewears created successfully' });
   } catch (error) {
-    console.error('Error creating Eyewears:', error)
-    response.status(500).json({ error: "Internal Server Error" });
+    console.error('Error fetching eyewear:', error);
+    response.status(500).json({ error: 'Failed to fetch eyewear' });
   }
-})
+});
+
+// UPDATE Status for multiple eyewearIDs in the same orderID
+app.put("/eyewears/manyStatus/:orderID", async (request, response) => {
+  const { orderID } = request.params;
+  const updates = request.body; // ข้อมูลการอัปเดตที่ส่งมา
+
+  try {
+    // ดึง eyewear ทั้งหมดที่เกี่ยวข้องกับ orderID ที่ระบุ
+    const eyewears = await Eyewear.findAll({ where: { orderID } });
+
+    // ตรวจสอบว่ามี eyewear ที่เกี่ยวข้องกับ orderID นี้หรือไม่
+    if (!eyewears || eyewears.length === 0) {
+      return response.status(404).json({ error: `No eyewear found for orderID ${orderID}` });
+    }
+
+    // อัปเดต orderStatus สำหรับ eyewear แต่ละอันตามข้อมูลที่รับมา
+    const updatedEyewear = await Promise.all(updates.map(async (updateData) => {
+      const { eyewearID, orderStatus } = updateData;
+
+      // ตรวจสอบว่า eyewearID ที่ระบุอยู่ในรายการ eyewear ที่เกี่ยวข้องกับ orderID นี้หรือไม่
+      const eyewearToUpdate = eyewears.find(eyewear => eyewear.eyewearID === eyewearID);
+      if (!eyewearToUpdate) {
+        throw new Error(`Eyewear not found with eyewearID ${eyewearID} in orderID ${orderID}`);
+      }
+
+      // อัปเดต orderStatus และข้อมูลอื่น ๆ สำหรับ eyewear นี้
+      await eyewearToUpdate.update({ orderStatus });
+
+      return eyewearToUpdate;
+    }));
+
+    response.json(updatedEyewear);
+  } catch (error) {
+    console.error('Error updating eyewear status:', error.message); // แสดงข้อความของ error ที่เป็นประโยชน์
+    response.status(500).json({ error: error.message }); // ส่งข้อความของ error กลับไปยัง client
+  }
+});
 
 // UPDATE
 app.put("/orders/:id", (request, response) => {

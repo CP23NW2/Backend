@@ -183,7 +183,7 @@ app.put("/eyewears/status/:id", async (request, response) => {
 
     // Define the valid status transitions
     const validTransitions = {
-      'Preparing': ['Processing'],
+      'Preparing': ['Processing','Complete'],
       'Processing': ['Complete']
       // Add more transitions if needed
     };
