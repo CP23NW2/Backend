@@ -332,13 +332,31 @@ app.put("/orders/:id", (request, response) => {
 // DELETE
 app.delete("/orders/:id", (request, response) => {
   const { id } = request.params;
-  Order.destroy({
+  Order.findOne({
     where: {
       orderID: id,
     },
   }).then((order) => {
-    response.json(order);
+    if (!order) {
+      // ไม่พบคำสั่ง
+      return response.status(404).json({ error: "Order not found" });
+    }
+    // ลบคำสั่งสำเร็จ
+    Order.destroy({
+      where: {
+        orderID: id,
+      },
+    }).then(() => {
+      response.json("Delete Order Succsess!");
+    }).catch(error => {
+      // การประมวลผลเกิดข้อผิดพลาด
+      response.status(500).json({ error: "Internal Server Error" });
+    });
+  }).catch(error => {
+    // การประมวลผลเกิดข้อผิดพลาด
+    response.status(500).json({ error: "Internal Server Error" });
   });
 });
+
 
 module.exports = app;

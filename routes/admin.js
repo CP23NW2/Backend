@@ -189,14 +189,42 @@ app.put("/admins/:id", (request, response) => {
   });
 
 // DELETE
-app.delete("/admins/:id", (request, response) => {
+// app.delete("/admins/:id", (request, response) => {
+//     const { id } = request.params;
+//     Admin.destroy({
+//       where: {
+//         adminID: id,
+//       },
+//     }).then((admin) => {
+//       response.json(admin);
+//     });
+//   });
+
+  app.delete("/admins/:id", (request, response) => {
     const { id } = request.params;
-    Admin.destroy({
+    Admin.findOne({
       where: {
-        adminTel: id,
+        adminID: id,
       },
-    }).then((admin) => {
-      response.json(admin);
+    }).then((order) => {
+      if (!order) {
+        // ไม่พบคำสั่ง
+        return response.status(404).json({ error: "Admin not found" });
+      }
+      // ลบคำสั่งสำเร็จ
+      Admin.destroy({
+        where: {
+          adminID: id,
+        },
+      }).then(() => {
+        response.json("Delete Admin Succsess!");
+      }).catch(error => {
+        // การประมวลผลเกิดข้อผิดพลาด
+        response.status(500).json({ error: "Internal Server Error" });
+      });
+    }).catch(error => {
+      // การประมวลผลเกิดข้อผิดพลาด
+      response.status(500).json({ error: "Internal Server Error" });
     });
   });
 
@@ -304,7 +332,6 @@ app.post('/admins/login', async (req, res) => {
 
     // ถ้าพบผู้ดูแลระบบหรือผู้ใช้ถูกต้อง
     // ส่งรหัส OTP ไปยังอีเมลของผู้ใช้
-    // const otp = generateOTP();
     const otp = generateOTP();
     admin.otp = otp;
     await admin.save();
@@ -347,58 +374,4 @@ app.post('/admins/verify-otp', async (req, res) => {
     return res.status(500).json({ error: 'Failed to process OTP verification request.', errorMessage: error.message });
   }
 });
-
-// // Create a Nodemailer transporter
-// const transporter = nodemailer.createTransport({
-//   service: 'gmail',
-//   auth: {
-//     user: 'pizzapreaww@gmail.com',
-//     pass: 'Pizza_Preaw', // Use the app password generated in Step 1
-//   },
-// });
-
-// Create a POST route to send emails
-// app.post('/send-email', async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     const responseEmail = await transporter.sendMail({
-//       from: 'pizzapreaww@gmail.com',
-//       to: email,
-//       subject: 'Login OTP Verification',
-//       text: `Your OTP is: 123`, // Generate OTP here or pass it from the request body
-//     });
-//     res.status(200).json({ message: 'Email sent successfully', responseEmail });
-//   } catch (err) {
-//     console.error('Error sending email:', err);
-//     res.status(500).json({ error: 'Failed to send email' });
-//   }
-// });
-
-
-
-//login
-app.post('/admins/log', async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    // Find admin based on adminID
-    const admin = await Admin.findOne({ where: { email, password } });
-    if (!admin) {
-      res.status(401).json({
-        message: "Login not successful",
-        error: "email or password incorrect",
-      })
-    } else {
-      res.status(200).json({
-        message: "Login successful",
-        admin,
-      })
-    }
-  } catch (error) {
-    res.status(400).json({
-      message: "An error occurred",
-      error: error.message,
-    })
-  }
-});
-
 module.exports = app;

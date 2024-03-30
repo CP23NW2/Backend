@@ -220,15 +220,44 @@ app.put("/eyewears/status/:id", async (request, response) => {
 
 
 // DELETE
+// app.delete("/eyewears/:id", (request, response) => {
+//     const { id } = request.params;
+//     Eyewear.destroy({
+//       where: {
+//         eyewearID: id,
+//       },
+//     }).then((eyewear) => {
+//       response.json(eyewear);
+//     });
+//   });
+  
 app.delete("/eyewears/:id", (request, response) => {
-    const { id } = request.params;
+  const { id } = request.params;
+  Eyewear.findOne({
+    where: {
+      eyewearID: id,
+    },
+  }).then((order) => {
+    if (!order) {
+      // ไม่พบคำสั่ง
+      return response.status(404).json({ error: "Eyewear not found" });
+    }
+    // ลบคำสั่งสำเร็จ
     Eyewear.destroy({
       where: {
         eyewearID: id,
       },
-    }).then((eyewear) => {
-      response.json(eyewear);
+    }).then(() => {
+      response.json("Delete Eyewear Succsess!");
+    }).catch(error => {
+      // การประมวลผลเกิดข้อผิดพลาด
+      response.status(500).json({ error: "Internal Server Error" });
     });
+  }).catch(error => {
+    // การประมวลผลเกิดข้อผิดพลาด
+    response.status(500).json({ error: "Internal Server Error" });
   });
-  
+});
+
+
 module.exports = app;

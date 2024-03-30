@@ -254,15 +254,15 @@ app.delete("/customers/:id", (request, response) => {
   Customer.findByPk(parseInt(id)).then((customer) => {
     if (!customer) {
       return response.status(404).json({
-        error: "customerTel not found, Please check your input again!",
+        error: "Customer not found",
       });
     }
     return Customer.destroy({
       where: {
         customerID: id,
       },
-    }).then((customer) => {
-      response.json("Deleted : " + customer + "customer!");
+    }).then(() => {
+      response.json("Delete Customer Succsess!");
     });
   });
 });
