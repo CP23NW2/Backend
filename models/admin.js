@@ -27,7 +27,7 @@ module.exports = function Admin() {
                     allowNull: false
                 },
                 password: {
-                    type: DataTypes.STRING(16),
+                    type: DataTypes.STRING,
                     allowNull: false
                 },
                 email: {

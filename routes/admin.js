@@ -4,6 +4,7 @@ const { Admin } = require("../models");
 const app = express.Router();
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 
 // function  
@@ -83,7 +84,8 @@ app.post("/admins", async (request, response) => {
       const { adminTel, adminName, email, password } = request.body;
       const adminID = generateAdminID();
       const adminTelAsNumber = adminTel;
-      
+      const hashedPassword = await bcrypt.hash(password, 10)
+
       let isDuplicate = await Admin.findOne({ where: { adminID } });
       while (isDuplicate) {
         // ถ้า customerID ซ้ำกับอันอื่น สร้าง customerID ใหม่
@@ -140,7 +142,7 @@ app.post("/admins", async (request, response) => {
         adminTel: adminTelAsNumber, 
         adminName, 
         email,
-        password
+        password: hashedPassword
       })
         response.json(newAdmin);
     } catch (error) {
@@ -319,10 +321,10 @@ app.post('/admins/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // ค้นหาผู้ดูแลระบบโดยใช้ email และ password
-    const admin = await Admin.findOne({ where: { email, password } });
+    // Find admin by email
+    const admin = await Admin.findOne({ where: { email } });
 
-    // ถ้าไม่พบผู้ดูแลระบบหรือผู้ใช้ไม่ถูกต้อง ให้ส่งข้อความข้อผิดพลาด
+    // If admin is not found, return error
     if (!admin) {
       return res.status(401).json({
         message: "Login not successful",
@@ -330,22 +332,32 @@ app.post('/admins/login', async (req, res) => {
       });
     }
 
-    // ถ้าพบผู้ดูแลระบบหรือผู้ใช้ถูกต้อง
-    // ส่งรหัส OTP ไปยังอีเมลของผู้ใช้
+    // Compare hashed password
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+
+    // If passwords don't match, return error
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        message: "Login not successful",
+        error: "Email or Password incorrect",
+      });
+    }
+
+    // Passwords match, generate and save OTP
     const otp = generateOTP();
     admin.otp = otp;
     await admin.save();
+    // Send OTP to email
     await sendOTPByEmail(email, otp);
-    // ส่งข้อความสำเร็จหากไม่มีข้อผิดพลาด
+
+    // Login successful, send success message
     return res.status(200).json({ message: 'Login successful. OTP sent to your email.' });
   } catch (error) {
-    // หากเกิดข้อผิดพลาดในการค้นหาหรือส่งรหัส OTP
-    // ส่งข้อความข้อผิดพลาด
+    // Handle errors
     console.error("Error during login:", error);
-    return res.status(500).json({ error: 'Failed to process login request.', errorMessage: error.message  });
+    return res.status(500).json({ error: 'Failed to process login request.', errorMessage: error.message });
   }
 });
-
 app.post('/admins/verify-otp', async (req, res) => {
   const { email, otp } = req.body;
   try {
