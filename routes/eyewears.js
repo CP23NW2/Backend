@@ -132,7 +132,6 @@ app.post("/eyewears", async (request, response, next) => {
 // READ ID
 app.get("/eyewears/:id", (request, response) => {
     const { id } = request.params;
-    console.log('test : ', id);
     Eyewear.findByPk(parseInt(id)).then((eyewear) => {
       if (eyewear) {
         response.json(eyewear);

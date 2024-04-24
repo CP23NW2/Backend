@@ -11,11 +11,11 @@ app.post('/validate', async (request, response) => {
   let { orderID, lastFourDigits } = request.body
 
   if (!orderID || !lastFourDigits) {
-    return response.status(400).json({ error: 'Invalid Request' })
+    return response.status(400).json({ error: 'Please input OrderID and Last 4 Phone Number digits' })
   }
 
   if (orderID.length === 0 || lastFourDigits.length === 0) {
-    return response.status(400).json({ error: 'Invalid Request' })
+    return response.status(400).json({ error: 'Please input OrderID and Last 4 Phone Number digits' })
   }
 
   try {
@@ -28,7 +28,7 @@ app.post('/validate', async (request, response) => {
     })
 
     if (!customer) {
-      return response.status(404).json({ error: 'Customer Not Found' })
+      return response.status(404).json({ error: 'Order and Customer Not Found' })
     }
 
     const order = await Order.findOne({
@@ -39,25 +39,8 @@ app.post('/validate', async (request, response) => {
       ],
       where: { orderID },
     })
-
-    console.log(order)
     return response.status(200).json(order)
-
-    // Order.findOne({
-    //   where: { orderID },
-    //   include: [
-    //     {
-    //       model: Customer,
-    //     }
-    //   ]
-    // }).then((order) => {
-    //   if (order === null) {
-    //     return response.status(404).json({ error: 'Order Not Found' })
-    //   }
-    //    return response.status(200).json(order)
-    // })
   } catch (error) {
-    console.error('Error Validation:', error)
     response.status(500).json({ error: 'Internal Server Error' })
   }
 })

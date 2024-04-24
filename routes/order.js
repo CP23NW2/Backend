@@ -218,7 +218,6 @@ app.post("/orders", async (request, response) => {
 // READ ID
 app.get("/orders/:id", (request, response) => {
   const { id } = request.params;
-  console.log("test : ", id);
   Order.findByPk(parseInt(id)).then((order) => {
     if (order) {
       response.json(order);
